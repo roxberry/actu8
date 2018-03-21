@@ -1,60 +1,61 @@
-/**
- * app.js
- *
- * Use `app.js` to run your app without `sails lift`.
- * To start the server, run: `node app.js`.
- *
- * This is handy in situations where the sails CLI is not relevant or useful.
- *
- * For example:
- *   => `node app.js`
- *   => `forever start app.js`
- *   => `node debug app.js`
- *   => `modulus deploy`
- *   => `heroku scale`
- *
- *
- * The same command-line arguments are supported, e.g.:
- * `node app.js --silent --port=80 --prod`
- */
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var bodyParser = require('body-parser');
 
+var config = require('./config/database');
+var auth = require('./routes/auth');
+var info = require('./routes/info');
+var real = require('./routes/real');
 
-// Ensure we're in the project directory, so cwd-relative paths work as expected
-// no matter where we actually lift from.
-// > Note: This is not required in order to lift, but it is a convenient default.
-process.chdir(__dirname);
+var app = express();
 
-// Attempt to import `sails`.
-var sails;
-try {
-  sails = require('sails');
-} catch (e) {
-  console.error('To run an app using `node app.js`, you usually need to have a version of `sails` installed in the same directory as your app.');
-  console.error('To do that, run `npm install sails`');
-  console.error('');
-  console.error('Alternatively, if you have sails installed globally (i.e. you did `npm install -g sails`), you can use `sails lift`.');
-  console.error('When you run `sails lift`, your app will still use a local `./node_modules/sails` dependency if it exists,');
-  console.error('but if it doesn\'t, the app will run with the global sails instead!');
-  return;
-}
+var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+mongoose.connect(config.database, { promiseLibrary: require('bluebird') })
+  .then(() =>  console.log('connection successful'))
+  .catch((err) => console.error(err));
 
-// --•
-// Try to get `rc` dependency (for loading `.sailsrc` files).
-var rc;
-try {
-  rc = require('rc');
-} catch (e0) {
-  try {
-    rc = require('sails/node_modules/rc');
-  } catch (e1) {
-    console.error('Could not find dependency: `rc`.');
-    console.error('Your `.sailsrc` file(s) will be ignored.');
-    console.error('To resolve this, run:');
-    console.error('npm install rc --save');
-    rc = function () { return {}; };
-  }
-}
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({'extended':'false'}));
+app.use(express.static(path.join(__dirname, 'build')));
 
+app.use('/api/auth', auth);
+app.use('/api/info', info);
+app.use('/api/real', real);
 
-// Start server
-sails.lift(rc('sails'));
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+//socket logger
+const io = require('socket.io')();
+
+io.on('connection', (client) => {
+  client.on('subscribeToTimer', (interval) => {
+    console.log('client is subscribing to timer with interval ', interval);
+    setInterval(() => {
+      client.emit('timer', new Date());
+    }, interval);
+  });
+});
+
+console.log('listening on port ', 3000);
+
+module.exports = app;
