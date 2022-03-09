@@ -1,2 +1,33 @@
-# actu8io
-report for ACTU8 IO projects
+# actu8.io
+
+ACTU8 I/O - open platform for technology projects
+
+- platform
+
+- security
+
+- robotics
+
+- ai
+
+- nlp
+
+- machine learning
+
+- language playgrounds
+
+- architecture
+
+- documentation
+
+- data
+
+- serverless
+
+- no code
+
+- linguistics
+
+- writing
+
+
