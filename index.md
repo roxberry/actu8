@@ -2,11 +2,13 @@
 
 ACTU8 I/O - open platform for technology projects
 
-- platform
+- architecture
 
 - security
 
 - robotics
+
+- platforms
 
 - ai
 
@@ -16,7 +18,7 @@ ACTU8 I/O - open platform for technology projects
 
 - language playgrounds
 
-- architecture
+- performance engineering
 
 - documentation
 
