@@ -2,6 +2,12 @@
 
 ACTU8 I/O - open platform for technology projects
 
+## ACTU8.app
+
+[ACTU8.app](/projects/ACTU8.app/requirements.md)
+
+## Areas of Interest
+ 
 - platform
 
 - security
