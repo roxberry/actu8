@@ -8,12 +8,16 @@ ACTU8 I/O - open platform for technology projects
 
 ## Areas of Interest
  
-- platform
+- architecture
 
 - security
 
 - robotics
 
+- platforms
+
+- data science
+ 
 - ai
 
 - nlp
@@ -22,11 +26,9 @@ ACTU8 I/O - open platform for technology projects
 
 - language playgrounds
 
-- architecture
+- performance engineering
 
 - documentation
-
-- data
 
 - serverless
 
